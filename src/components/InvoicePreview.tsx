@@ -1,52 +1,32 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import * as z from 'zod';
+import { formatCurrency } from '@/utils/formatCurrency';
+import { parseDate } from '@/utils/parseDate';
+import { parseNumericValue } from '@/utils/parseNumericValue';
 
 interface InvoicePreviewProps {
   currency: 'GBP' | 'USD';
+  defaultValues: InvoiceFormValues;
   subscribe: any;
   theme: any;
 }
 
 export default function InvoicePreview(props: InvoicePreviewProps) {
-  const [values, setValues] = useState<InvoiceFormValues | null>(null);
+  const [values, setValues] = useState<InvoiceFormValues | null>(
+    props.defaultValues
+  );
 
   useEffect(() => {
     const callback = props.subscribe({
       formState: {
-        values: true
+        values: true,
+        defaultValues: true
       },
       callback: ({ values }: { values: InvoiceFormValues }) => setValues(values)
     });
     return () => callback();
   }, [props.subscribe]);
-
-  const parseDate = (date: string) => {
-    if (!z.date().safeParse(date)) return;
-    return new Date(date).toLocaleString('en-US', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    });
-  };
-
-  const parseNumericValue = (value: string | number | undefined | null) => {
-    const numeric =
-      typeof value === 'number'
-        ? value
-        : Number.parseFloat(String(value ?? ''));
-    return Number.isFinite(numeric) ? numeric : 0;
-  };
-
-  const formatCurrency = (amount: number, style: 'currency' | 'decimal') => {
-    const formattedAmount = new Intl.NumberFormat('en-GB', {
-      style: style,
-      currency: props.currency,
-      minimumFractionDigits: 2
-    }).format(amount);
-    return formattedAmount;
-  };
 
   const getInvoiceTotals = (data: InvoiceFormValues | null) => {
     const subtotal = (data?.items ?? []).reduce((sum, item) => {
@@ -120,8 +100,12 @@ export default function InvoicePreview(props: InvoicePreviewProps) {
                     </div>
                     <div className='template-items-price'>
                       <div>{qty}</div>
-                      <div>{formatCurrency(amount, 'decimal')}</div>
-                      <div>{formatCurrency(price, 'decimal')}</div>
+                      <div>
+                        {formatCurrency(amount, props.currency, 'decimal')}
+                      </div>
+                      <div>
+                        {formatCurrency(price, props.currency, 'decimal')}
+                      </div>
                     </div>
                   </div>
                 );
@@ -131,7 +115,7 @@ export default function InvoicePreview(props: InvoicePreviewProps) {
         <div className='area-totals'>
           <div className='template-totals-line'>
             <div>Subtotal</div>
-            <div>{formatCurrency(subtotal, 'decimal')}</div>
+            <div>{formatCurrency(subtotal, props.currency, 'decimal')}</div>
           </div>
           <div className='template-totals-line'>
             <div>Tax</div>
@@ -139,7 +123,7 @@ export default function InvoicePreview(props: InvoicePreviewProps) {
           </div>
           <div className='template-totals-line'>
             <div>Total</div>
-            <div>{formatCurrency(total, 'currency')}</div>
+            <div>{formatCurrency(total, props.currency, 'currency')}</div>
           </div>
         </div>
       </div>

@@ -46,7 +46,36 @@ const formSchema = z.object({
   tax: z.string(),
   notes: z.string()
 });
-const formDate = new Date().toISOString().split('T')[0];
+
+const date = new Date();
+const toDate = new Date(date);
+toDate.setDate(toDate.getDate() + 7);
+
+const defaultFromDate = date.toISOString().split('T')[0];
+const defaultToDate = toDate.toISOString().split('T')[0];
+
+const defaultValues = {
+  fromName: '',
+  fromEmail: '',
+  fromAddress: '',
+  fromCity: '',
+  fromPostcode: '',
+  fromCountry: '',
+  fromPhone: '',
+  toName: '',
+  toEmail: '',
+  toAddress: '',
+  toCity: '',
+  toPostcode: '',
+  toCountry: '',
+  toPhone: '',
+  invoiceNo: '#100',
+  issueDate: defaultFromDate,
+  dueDate: defaultToDate,
+  items: [{ qty: 1, description: '', amount: '' }],
+  tax: '',
+  notes: ''
+};
 
 export default function CreateInvoice() {
   const [bleed, setBleed] = useState<boolean>(false);
@@ -54,28 +83,7 @@ export default function CreateInvoice() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      fromName: '',
-      fromEmail: '',
-      fromAddress: '',
-      fromCity: '',
-      fromPostcode: '',
-      fromCountry: '',
-      fromPhone: '',
-      toName: '',
-      toEmail: '',
-      toAddress: '',
-      toCity: '',
-      toPostcode: '',
-      toCountry: '',
-      toPhone: '',
-      invoiceNo: '',
-      issueDate: formDate,
-      dueDate: formDate,
-      items: [{ qty: 1, description: '', amount: '' }],
-      tax: '',
-      notes: ''
-    }
+    defaultValues: defaultValues
   });
 
   const { width, height } = useWindowSize();
@@ -130,6 +138,7 @@ export default function CreateInvoice() {
                     >
                       <InvoicePreview
                         currency='GBP'
+                        defaultValues={defaultValues}
                         subscribe={form.subscribe}
                         theme='theme-1'
                       />

@@ -194,7 +194,6 @@ input[type='date']::-webkit-calendar-picker-indicator {
   --padding-header: 0.2cm;
   display: grid;
   gap: var(--gap);
-  /* aspect-ratio: var(--aspect-paper); */
   height: 100%;
   padding: var(--padding);
   font-size: 16px;
@@ -214,7 +213,7 @@ input[type='date']::-webkit-calendar-picker-indicator {
 
 .area-from {
   grid-area: from;
-  font-size: 30px;
+  font-size: 24px;
   line-height: 1.375;
 }
 
