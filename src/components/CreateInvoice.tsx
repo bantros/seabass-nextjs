@@ -25,9 +25,7 @@ const formSchema = z.object({
   toPostcode: z.string(),
   toCountry: z.string(),
   toPhone: z.string(),
-  logo: z
-    .base64()
-    .transform((val: string) => Buffer.from(val, 'base64').toString('utf-8')),
+  logo: z.string(),
   invoiceNo: z.string(),
   issueDate: z.iso.date(),
   dueDate: z.iso.date(),
@@ -37,12 +35,6 @@ const formSchema = z.object({
         qty: z.number(),
         description: z.string(),
         amount: z.string()
-        // amount: z.string().regex(/^(0|[1-9]\d*)\.\d{2}$/, {
-        //   message: 'Must be a number with exactly 2 decimal places'
-        // })
-        // .refine((val) => parseFloat(val) > 0, {
-        //   message: 'Money amount must be greater than 0'
-        // })
       })
     )
     .min(1, 'Add at least 1 item.'),

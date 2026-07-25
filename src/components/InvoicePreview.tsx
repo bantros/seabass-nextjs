@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { formatCurrency } from '@/utils/formatCurrency';
+import { getInvoiceTotals } from '@/utils/getInvoiceTotals';
 import { parseDate } from '@/utils/parseDate';
 import { parseNumericValue } from '@/utils/parseNumericValue';
 
@@ -27,24 +28,6 @@ export default function InvoicePreview(props: InvoicePreviewProps) {
     });
     return () => callback();
   }, [props.subscribe]);
-
-  const getInvoiceTotals = (data: InvoiceFormValues | null) => {
-    const subtotal = (data?.items ?? []).reduce((sum, item) => {
-      const amount = parseNumericValue(item?.amount);
-      const qty = parseNumericValue(item?.qty);
-      return sum + amount * qty;
-    }, 0);
-
-    const taxRate = parseNumericValue(data?.tax) / 100;
-    const tax = subtotal * taxRate;
-    const total = subtotal + tax;
-
-    return {
-      subtotal,
-      tax,
-      total
-    };
-  };
 
   const { subtotal, tax, total } = getInvoiceTotals(values);
 
