@@ -50,6 +50,14 @@ export default function InvoicePreview(props: InvoicePreviewProps) {
 
   return (
     <div id={props.theme} className='template bg-theme-tertiary/25'>
+      <div className='area-logo'>
+        {values?.logo && (
+          <div className='logo max-w-1/2'>
+            <img src={values.logo} alt='Logo' />
+          </div>
+        )}
+      </div>
+
       <div className='area-from'>
         {values?.fromName && <div>{values.fromName}</div>}
         {values?.fromEmail && <div>{values.fromEmail}</div>}

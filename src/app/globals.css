@@ -211,6 +211,10 @@ input[type='date']::-webkit-calendar-picker-indicator {
   padding-right: calc(var(--padding) * 2);
 }
 
+.area-logo {
+  grid-area: logo;
+}
+
 .area-from {
   grid-area: from;
   font-size: 24px;

@@ -57,7 +57,7 @@ const fieldVariants = cva(
       orientation: {
         vertical: 'flex-col *:w-full [&>.sr-only]:w-auto',
         horizontal:
-          'grid grid-cols-[3fr_7fr] gap-4 items-center pl-6 pr-2 bg-muted rounded-4xl has-[>[data-slot=required]]:grid-cols-[3fr_6fr_0.5fr] has-[>[data-slot=field-content]]:items-start *:data-[slot=field-label]:flex-[1_0_auto] has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px',
+          'grid grid-cols-[3fr_7fr] gap-4 items-center pl-6 pr-2 bg-muted rounded-4xl has-[>[data-slot=button]]:grid-cols-[3fr_6fr_0.5fr] has-[>[data-slot=required]]:grid-cols-[3fr_6fr_0.5fr] has-[>[data-slot=field-content]]:items-start *:data-[slot=field-label]:flex-[1_0_auto] has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px',
         responsive:
           'flex-col *:w-full @md/field-group:flex-row @md/field-group:items-center @md/field-group:*:w-auto @md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:*:data-[slot=field-label]:flex-auto [&>.sr-only]:w-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px'
       }

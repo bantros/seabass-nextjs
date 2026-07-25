@@ -25,6 +25,9 @@ const formSchema = z.object({
   toPostcode: z.string(),
   toCountry: z.string(),
   toPhone: z.string(),
+  logo: z
+    .base64()
+    .transform((val: string) => Buffer.from(val, 'base64').toString('utf-8')),
   invoiceNo: z.string(),
   issueDate: z.iso.date(),
   dueDate: z.iso.date(),

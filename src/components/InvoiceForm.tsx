@@ -1,7 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useRef, useState } from 'react';
 import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form';
+import { ArrowLeft, ArrowRight, Asterisk, Plus, X } from 'lucide-react';
+import clsx from 'clsx';
 
 import {
   Accordion,
@@ -20,7 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, Asterisk, Plus, X } from 'lucide-react';
+import { toBase64 } from '@/utils/toBase64';
 
 interface InvoiceFormProps {
   form: UseFormReturn<InvoiceFormValues>;
@@ -28,13 +31,36 @@ interface InvoiceFormProps {
 }
 
 export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
+  const [selectedLogo, setSelectedLogo] = useState<{
+    file: string | undefined;
+    image: string | undefined;
+  }>({
+    file: undefined,
+    image: undefined
+  });
   const { fields, append, remove } = useFieldArray<InvoiceFormValues>({
     control: form.control,
     name: 'items'
   });
+  const logoRef = useRef<HTMLInputElement | null>(null);
 
   const watchFromName = form.watch('fromName');
   const watchToName = form.watch('toName');
+
+  const handleLogoChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const image = (await toBase64(file)) as string;
+      setSelectedLogo({
+        file: file.name,
+        image: image
+      });
+      return image;
+    }
+    return undefined;
+  };
 
   return (
     <>
@@ -371,6 +397,90 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+
+        <FieldSet>
+          <FieldLegend className='sr-only'>Logo</FieldLegend>
+          <FieldGroup>
+            <Controller
+              name='logo'
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field
+                  orientation='horizontal'
+                  data-invalid={fieldState.invalid}
+                >
+                  <FieldLabel htmlFor='logo'>Logo</FieldLabel>
+                  <Input
+                    ref={(event) => {
+                      field.ref(event);
+                      logoRef.current = event;
+                    }}
+                    id='logo'
+                    className='hidden'
+                    type='file'
+                    name={field.name}
+                    accept='.jpg,.jpeg,.png,.svg'
+                    aria-invalid={fieldState.invalid}
+                    onChange={async (event) => {
+                      const image = await handleLogoChange(event);
+                      image && field.onChange(image);
+                    }}
+                  />
+                  <div
+                    className={clsx(
+                      'flex items-center w-full min-w-0 min-h-15 py-1 px-0 text-xl text-muted-foreground'
+                    )}
+                  >
+                    {selectedLogo.file ? selectedLogo.file : 'None'}
+                  </div>
+                  {!selectedLogo.file && (
+                    <button
+                      data-slot='button'
+                      className='flex w-full items-center justify-between h-15 text-xl cursor-pointer'
+                      type='button'
+                      aria-label='Upload image'
+                      onClick={() => logoRef?.current?.click()}
+                    >
+                      <span className='flex items-center justify-center size-11 bg-white rounded-full'>
+                        <Plus />
+                      </span>
+                    </button>
+                  )}
+                  {selectedLogo.image && (
+                    <>
+                      <button
+                        data-slot='button'
+                        className='flex w-full items-center justify-between h-15 text-xl cursor-pointer'
+                        type='button'
+                        aria-label='Remove image'
+                        onClick={() => {
+                          form.setValue('logo', '');
+                          setSelectedLogo({
+                            file: undefined,
+                            image: undefined
+                          });
+                        }}
+                      >
+                        <span className='flex items-center justify-center size-11 bg-white rounded-full'>
+                          <X />
+                        </span>
+                      </button>
+                      <div className='w-full grid grid-cols-[3fr_6fr_0.5fr] col-span-3 gap-4 items-center bg-muted'>
+                        <div className='col-start-2 flex items-center justify-center max-w-60 p-10 mb-4 bg-background rounded-4xl'>
+                          <img
+                            className='object-contain object-center size-full'
+                            src={selectedLogo.image}
+                            alt='Logo preview'
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+        </FieldSet>
 
         <FieldSet>
           <FieldLegend className='sr-only'>Information</FieldLegend>
