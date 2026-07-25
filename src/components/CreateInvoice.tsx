@@ -93,8 +93,20 @@ export default function CreateInvoice() {
     return preview.offsetWidth / 850;
   }
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log('onSubmit.data', data);
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    const response = await fetch('/api/create-invoice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `invoice-${data.invoiceNo}-${data.toName}-${data.issueDate}.pdf`;
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   }
 
   return (
