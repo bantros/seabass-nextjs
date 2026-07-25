@@ -1,0 +1,151 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import clsx from 'clsx';
+
+import InvoicePreview from '@/components/InvoicePreview';
+import InvoiceForm from '@/components/InvoiceForm';
+import { useWindowSize } from '@/hooks/useWindowSize';
+
+const formSchema = z.object({
+  fromName: z.string().min(1, 'This field is required.'),
+  fromEmail: z.email({ message: 'Enter a valid email.' }),
+  fromAddress: z.string(),
+  fromCity: z.string(),
+  fromPostcode: z.string(),
+  fromCountry: z.string(),
+  fromPhone: z.string(),
+  toName: z.string().min(1, 'This field is required.'),
+  toEmail: z.email({ message: 'Enter a valid email.' }),
+  toAddress: z.string(),
+  toCity: z.string(),
+  toPostcode: z.string(),
+  toCountry: z.string(),
+  toPhone: z.string(),
+  invoiceNo: z.string(),
+  issueDate: z.iso.date(),
+  dueDate: z.iso.date(),
+  items: z
+    .array(
+      z.object({
+        qty: z.number(),
+        description: z.string(),
+        amount: z.string()
+        // amount: z.string().regex(/^(0|[1-9]\d*)\.\d{2}$/, {
+        //   message: 'Must be a number with exactly 2 decimal places'
+        // })
+        // .refine((val) => parseFloat(val) > 0, {
+        //   message: 'Money amount must be greater than 0'
+        // })
+      })
+    )
+    .min(1, 'Add at least 1 item.'),
+  tax: z.string(),
+  notes: z.string()
+});
+const formDate = new Date().toISOString().split('T')[0];
+
+export default function CreateInvoice() {
+  const [bleed, setBleed] = useState<boolean>(false);
+  const [scale, setScale] = useState<number | null>(null);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      fromName: '',
+      fromEmail: '',
+      fromAddress: '',
+      fromCity: '',
+      fromPostcode: '',
+      fromCountry: '',
+      fromPhone: '',
+      toName: '',
+      toEmail: '',
+      toAddress: '',
+      toCity: '',
+      toPostcode: '',
+      toCountry: '',
+      toPhone: '',
+      invoiceNo: '',
+      issueDate: formDate,
+      dueDate: formDate,
+      items: [{ qty: 1, description: '', amount: '' }],
+      tax: '',
+      notes: ''
+    }
+  });
+
+  const { width, height } = useWindowSize();
+
+  useEffect(() => {
+    setScale(() => calculateTemplateScale());
+  }, [bleed, width, height]);
+
+  function calculateTemplateScale() {
+    const preview = document.getElementById('preview');
+    if (!preview) return 1;
+    return preview.offsetWidth / 850;
+  }
+
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    console.log('onSubmit.data', data);
+  }
+
+  return (
+    <div className='grid'>
+      <div
+        className={clsx(
+          'grid gap-1 min-h-dvh',
+          bleed ? 'grid-cols-1' : 'md:grid-cols-2 p-1'
+        )}
+      >
+        <main
+          className={clsx(
+            'sticky top-0 flex flex-col justify-center bg-theme-primary',
+            bleed
+              ? 'h-full cursor-zoom-out'
+              : 'h-[calc(100dvh-8px)] p-4 lg:p-6 rounded-sm cursor-zoom-in'
+          )}
+          onClick={() => setBleed(!bleed)}
+        >
+          <div className={clsx('template-edit', bleed && 'bleed')}>
+            <div className='template-container'>
+              <div className='template-view'>
+                <div
+                  className={clsx(
+                    !bleed && 'flex flex-col justify-center size-full'
+                  )}
+                >
+                  <div id='preview' className='template-preview'>
+                    <div
+                      className={clsx(
+                        'render transition-transformmm',
+                        !bleed && 'shadow',
+                        !scale && 'hidden'
+                      )}
+                      style={{ transform: `scale(${scale})` }}
+                    >
+                      <InvoicePreview
+                        currency='GBP'
+                        subscribe={form.subscribe}
+                        theme='theme-1'
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <aside
+          className={clsx(bleed && 'hidden', 'relative p-5 lg:p-10 rounded-sm')}
+        >
+          <InvoiceForm form={form} onSubmit={onSubmit} />
+        </aside>
+      </div>
+    </div>
+  );
+}
