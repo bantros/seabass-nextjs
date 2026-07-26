@@ -60,10 +60,10 @@ export async function POST(request: NextRequest) {
       format: {
         preset: 'a4',
         margins: {
-          top: '10mm',
-          bottom: '10mm',
-          left: '10mm',
-          right: '20mm'
+          top: '0', // 10mm
+          bottom: '0', // 10mm
+          left: '0', // 10mm
+          right: '0' // 20mm
         }
       }
     })
