@@ -99,11 +99,13 @@ export default function CreateInvoice() {
   }
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
+    const formData = { ...data, color: searchParams.get('color') || 'white' };
+
     try {
       const response = await fetch('/api/share-invoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(formData)
       });
 
       if (!response.ok) {
