@@ -7,6 +7,15 @@ interface InvoicePageProps {
   params: Promise<{ id: string }>;
 }
 
+export async function generateMetadata() {
+  return {
+    robots: {
+      index: false,
+      follow: false
+    }
+  };
+}
+
 export default async function InvoicePage({ params }: InvoicePageProps) {
   const { id } = await params;
   const { data: row, error } = await createServiceClient()
