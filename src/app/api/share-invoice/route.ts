@@ -15,6 +15,5 @@ export async function POST(request: NextRequest) {
     console.error('[POST /api/share-invoice]', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-
   return NextResponse.json({ id: row.id }, { status: 201 });
 }

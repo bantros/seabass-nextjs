@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -94,19 +95,24 @@ export default function CreateInvoice() {
   }
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    const response = await fetch('/api/create-invoice', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `invoice-${data.invoiceNo}-${data.toName}-${data.issueDate}.pdf`;
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    try {
+      const response = await fetch('/api/share-invoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        const { error } = await response.json();
+        throw new Error(error ?? 'Failed to share invoice.');
+      }
+
+      const { id } = await response.json();
+      const shareUrl = `${window.location.origin}/invoice/${id}`;
+      router.push(shareUrl);
+    } catch (err) {
+      console.error('[onShare]', err);
+    }
   }
 
   return (
