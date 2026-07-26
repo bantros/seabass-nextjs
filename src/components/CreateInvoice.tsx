@@ -65,15 +65,17 @@ const defaultValues = {
   toPostcode: '',
   toCountry: '',
   toPhone: '',
+  logo: '',
   invoiceNo: '#100',
   issueDate: defaultFromDate,
   dueDate: defaultToDate,
-  items: [{ qty: 1, description: '', amount: '' }],
+  items: [{ qty: 1, description: 'Item', amount: '1000' }],
   tax: '',
   notes: ''
 };
 
 export default function CreateInvoice() {
+  const router = useRouter();
   const [bleed, setBleed] = useState<boolean>(false);
   const [scale, setScale] = useState<number | null>(null);
 

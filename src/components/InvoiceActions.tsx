@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Download, LoaderCircle } from 'lucide-react';
+import { Check, Copy, Download, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface InvoiceActionsProps {
@@ -9,9 +9,16 @@ interface InvoiceActionsProps {
 }
 
 export default function InvoiceActions({ data }: InvoiceActionsProps) {
-  const [loading, setLoading] = useState(false);
+  const [linkCopied, setLinkCopied] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  async function handleDownload() {
+  async function handleCopyClick() {
+    await navigator.clipboard.writeText(window.location.href);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 3000);
+  }
+
+  async function handleDownloadClick() {
     setLoading(true);
     try {
       const response = await fetch('/api/create-invoice', {
@@ -33,15 +40,35 @@ export default function InvoiceActions({ data }: InvoiceActionsProps) {
   }
 
   return (
-    <div className='fixed bottom-0 right-0 flex justify-end w-full p-5 lg:p-10'>
+    <div className='fixed bottom-0 right-0 flex justify-between gap-4 w-full p-5 lg:p-10'>
       <Button
         className='rounded-full'
-        onClick={handleDownload}
+        type='button'
+        variant='secondary'
+        disabled={linkCopied}
+        onClick={handleCopyClick}
+      >
+        {linkCopied ? (
+          <>
+            Share link copied!
+            <Check data-icon='inline-end' />
+          </>
+        ) : (
+          <>
+            Copy share link
+            <Copy data-icon='inline-end' />
+          </>
+        )}
+      </Button>
+
+      <Button
+        className='rounded-full'
         disabled={loading}
+        onClick={handleDownloadClick}
       >
         {loading ? (
           <>
-            Generating
+            Generating…
             <LoaderCircle data-icon='inline-end' className='animate-spin' />
           </>
         ) : (

@@ -3,7 +3,14 @@
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form';
-import { ArrowLeft, ArrowRight, Asterisk, Plus, X } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Asterisk,
+  LoaderCircle,
+  Plus,
+  X
+} from 'lucide-react';
 import clsx from 'clsx';
 
 import {
@@ -43,6 +50,8 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
     name: 'items'
   });
   const logoRef = useRef<HTMLInputElement | null>(null);
+
+  const { isLoading, isSubmitting } = form.formState;
 
   const watchFromName = form.watch('fromName');
   const watchToName = form.watch('toName');
@@ -687,10 +696,18 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
           </FieldGroup>
         </FieldSet>
 
-        <div className='sticky bottom-5 lg:bottom-10 flex justify-end'>
-          <Button className='rounded-full' type='submit'>
+        <div className='sticky bottom-5 lg:bottom-10 flex flex-col items-end gap-3'>
+          <Button
+            className='rounded-full'
+            type='submit'
+            disabled={isLoading || isSubmitting}
+          >
             Create invoice
-            <ArrowRight data-icon='inline-end' />
+            {isLoading || isSubmitting ? (
+              <LoaderCircle data-icon='inline-end' className='animate-spin' />
+            ) : (
+              <ArrowRight data-icon='inline-end' />
+            )}
           </Button>
         </div>
       </form>
