@@ -36,10 +36,10 @@ export default async function InvoicePage({ params }: InvoicePageProps) {
     <div
       className='flex flex-col items-center justify-center min-h-dvh p-5 lg:p-10 bg-theme-primary'
       style={{
-        backgroundColor: `${getInvoiceColorHex(row.data.color)}80`
+        backgroundColor: `${getInvoiceColorHex(row.data.color || 'muted')}80`
       }}
     >
-      <div className='w-full max-w-212.5'>
+      <div className='w-full max-w-212.5 shadow-xl'>
         <InvoiceTemplate
           color={row.data.color || 'white'}
           currency='GBP'

@@ -30,7 +30,7 @@ declare global {
   };
 
   type InvoiceColorType =
-    'white' | 'red' | 'green' | 'blue' | 'yellow' | 'orange' | 'pink' | null;
+    'white' | 'red' | 'green' | 'blue' | 'yellow' | 'orange' | 'pink' | 'muted' | null;
 }
 
 export default global;

@@ -12,7 +12,7 @@ interface InvoiceTemplateProps {
 }
 
 export default function InvoiceTemplate({
-  color,
+  color = 'white',
   currency,
   theme,
   values

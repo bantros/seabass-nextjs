@@ -179,12 +179,12 @@ input[type='date']::-webkit-calendar-picker-indicator {
   place-items: center;
   aspect-ratio: var(--aspect-ratio-w) / var(--aspect-ratio-h);
   background-color: transparent;
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-property: background-color;
   transition-timing-function: var(
     --tw-ease,
     var(--default-transition-timing-function)
   );
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
 
 .template-edit:not(.bleed) .template-preview {
@@ -210,7 +210,12 @@ input[type='date']::-webkit-calendar-picker-indicator {
   height: 100%;
   padding: var(--padding);
   font-size: 16px;
-  /* transition: background-color var(--transition-duration) var(--transition-ease); */
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  transition-property: background-color;
+  transition-timing-function: var(
+    --tw-ease,
+    var(--default-transition-timing-function)
+  );
 }
 
 /* template themes */

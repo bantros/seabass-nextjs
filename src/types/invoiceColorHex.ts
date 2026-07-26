@@ -5,5 +5,6 @@ export enum InvoiceColorHex {
   blue = '#3472e3',
   yellow = '#f4bf5f',
   orange = '#ff9068',
-  pink = '#fcacc7'
+  pink = '#fcacc7',
+  muted = '#9f9fa9'
 }
