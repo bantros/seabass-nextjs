@@ -28,6 +28,9 @@ declare global {
     tax: string;
     notes: string;
   };
+
+  type InvoiceColorType =
+    'white' | 'red' | 'green' | 'blue' | 'yellow' | 'orange' | 'pink' | null;
 }
 
 export default global;

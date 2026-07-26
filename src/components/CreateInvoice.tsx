@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import InvoicePreview from '@/components/InvoicePreview';
 import InvoiceForm from '@/components/InvoiceForm';
 import { useWindowSize } from '@/hooks/useWindowSize';
+import { getInvoiceColorHex } from '@/utils/getInvoiceColorHex';
 
 const formSchema = z.object({
   fromName: z.string().min(1, 'This field is required.'),
@@ -76,6 +77,7 @@ const defaultValues = {
 
 export default function CreateInvoice() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [bleed, setBleed] = useState<boolean>(false);
   const [scale, setScale] = useState<number | null>(null);
 
@@ -127,11 +129,14 @@ export default function CreateInvoice() {
       >
         <main
           className={clsx(
-            'sticky top-0 flex flex-col justify-center bg-theme-primary',
+            'sticky top-0 flex flex-col justify-center transition-colors',
             bleed
               ? 'h-full cursor-zoom-out'
               : 'h-[calc(100dvh-8px)] p-4 lg:p-6 rounded-sm cursor-zoom-in'
           )}
+          style={{
+            backgroundColor: `${getInvoiceColorHex(searchParams.get('color') as InvoiceColorType)}80`
+          }}
           onClick={() => setBleed(!bleed)}
         >
           <div className={clsx('template-edit', bleed && 'bleed')}>
@@ -152,6 +157,7 @@ export default function CreateInvoice() {
                       style={{ transform: `scale(${scale})` }}
                     >
                       <InvoicePreview
+                        color={searchParams.get('color') as InvoiceColorType}
                         currency='GBP'
                         defaultValues={defaultValues}
                         subscribe={form.subscribe}

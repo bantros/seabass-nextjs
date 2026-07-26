@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form';
@@ -31,6 +32,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { toBase64 } from '@/utils/toBase64';
+import { InvoiceColorHex } from '@/types/invoiceColorHex';
 
 interface InvoiceFormProps {
   form: UseFormReturn<InvoiceFormValues>;
@@ -38,6 +40,9 @@ interface InvoiceFormProps {
 }
 
 export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
+  const { replace } = useRouter();
+  const searchParams = useSearchParams();
+  const [params, setParams] = useState(new URLSearchParams(searchParams));
   const [selectedLogo, setSelectedLogo] = useState<{
     file: string | undefined;
     image: string | undefined;
@@ -55,6 +60,15 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
 
   const watchFromName = form.watch('fromName');
   const watchToName = form.watch('toName');
+
+  const handleThemeClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const color = event.currentTarget.dataset.color;
+    if (color) {
+      params.set('color', color);
+      setParams(params);
+      replace(`?${params.toString()}`);
+    }
+  };
 
   const handleLogoChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -247,6 +261,7 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
               </FieldSet>
             </AccordionContent>
           </AccordionItem>
+
           <AccordionItem value='to'>
             <AccordionTrigger className='w-full'>
               <div>To</div>
@@ -406,6 +421,24 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+
+        <FieldSet>
+          <FieldLegend className='sr-only'>Colour</FieldLegend>
+          <FieldGroup>
+            <div className='flex gap-1'>
+              {Object.entries(InvoiceColorHex).map(([key], index) => (
+                <button
+                  key={index}
+                  className={`aspect-square size-15 bg-theme-${key} rounded-full cursor-pointer`}
+                  type='button'
+                  aria-label={`Select ${key}`}
+                  data-color={key}
+                  onClick={handleThemeClick}
+                />
+              ))}
+            </div>
+          </FieldGroup>
+        </FieldSet>
 
         <FieldSet>
           <FieldLegend className='sr-only'>Logo</FieldLegend>

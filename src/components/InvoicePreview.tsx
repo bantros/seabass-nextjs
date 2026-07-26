@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import InvoiceTemplate from '@/components/InvoiceTemplate';
 
 interface InvoicePreviewProps {
+  color: InvoiceColorType;
   currency: 'GBP' | 'USD';
   defaultValues: InvoiceFormValues;
   subscribe: any;
@@ -30,6 +31,7 @@ export default function InvoicePreview(props: InvoicePreviewProps) {
 
   return (
     <InvoiceTemplate
+      color={props.color}
       currency={props.currency}
       values={values}
       theme={props.theme}

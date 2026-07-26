@@ -3,7 +3,7 @@
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.488 0.243 264.376);
+  --primary: oklch(0.5744 0.1838 261.18);
   --primary-foreground: oklch(0.97 0.014 254.604);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -15,16 +15,13 @@
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: oklch(0.705 0.015 286.067);
-  --theme-pine: #3e997a;
-  --theme-salmon: #ff8063;
-  --theme-corn: #f4bf5f;
   --aspect-paper: 1 / 1.414;
 }
 
 .dark {
   --background: oklch(0.141 0.005 285.823);
   --foreground: oklch(0.985 0 0);
-  --primary: oklch(0.424 0.199 265.638);
+  --primary: oklch(0.5744 0.1838 261.18);
   --primary-foreground: oklch(0.97 0.014 254.604);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
@@ -55,9 +52,18 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
   --color-theme-primary: var(--theme-pine);
   --color-theme-secondary: var(--theme-salmon);
   --color-theme-tertiary: var(--theme-corn);
+
+  --color-theme-red: #e34836;
+  --color-theme-green: #3e997a;
+  --color-theme-blue: #3472e3;
+  --color-theme-yellow: #f4bf5f;
+  --color-theme-orange: #ff9068;
+  --color-theme-pink: #fcacc7;
+
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 
@@ -79,6 +85,8 @@
     }
   }
 }
+
+@source inline('bg-theme-red bg-theme-green bg-theme-blue bg-theme-yellow bg-theme-orange bg-theme-pink');
 
 @utility animate-accordion-down {
   animation: accordion-down 0.2s ease-out;
@@ -171,7 +179,12 @@ input[type='date']::-webkit-calendar-picker-indicator {
   place-items: center;
   aspect-ratio: var(--aspect-ratio-w) / var(--aspect-ratio-h);
   background-color: transparent;
-  /* transition: background-color var(--transition-duration) var(--transition-ease); */
+  transition-property: background-color;
+  transition-timing-function: var(
+    --tw-ease,
+    var(--default-transition-timing-function)
+  );
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
 
 .template-edit:not(.bleed) .template-preview {

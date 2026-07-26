@@ -40,7 +40,7 @@ export default function InvoiceActions({ data }: InvoiceActionsProps) {
   }
 
   return (
-    <div className='fixed bottom-0 right-0 flex justify-between gap-4 w-full p-5 lg:p-10'>
+    <div className='fixed bottom-0 right-0 flex flex-col items-end gap-4 w-full p-5 lg:p-10'>
       <Button
         className='rounded-full'
         type='button'

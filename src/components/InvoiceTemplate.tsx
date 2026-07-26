@@ -1,15 +1,18 @@
 import { formatCurrency } from '@/utils/formatCurrency';
+import { getInvoiceColorHex } from '@/utils/getInvoiceColorHex';
 import { getInvoiceTotals } from '@/utils/getInvoiceTotals';
 import { parseDate } from '@/utils/parseDate';
 import { parseNumericValue } from '@/utils/parseNumericValue';
 
 interface InvoiceTemplateProps {
+  color: InvoiceColorType;
   currency: 'GBP' | 'USD';
   values: InvoiceFormValues;
   theme: string;
 }
 
 export default function InvoiceTemplate({
+  color,
   currency,
   theme,
   values
@@ -17,7 +20,11 @@ export default function InvoiceTemplate({
   const { subtotal, tax, total } = getInvoiceTotals(values);
 
   return (
-    <div id={theme} className='template bg-theme-tertiary/25'>
+    <div
+      id={theme}
+      className='template'
+      style={{ backgroundColor: getInvoiceColorHex(color) }}
+    >
       <div className='area-logo'>
         {values?.logo && (
           <div className='logo max-w-1/2'>
