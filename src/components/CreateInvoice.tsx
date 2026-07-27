@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -9,7 +9,6 @@ import clsx from 'clsx';
 
 import InvoicePreview from '@/components/InvoicePreview';
 import InvoiceForm from '@/components/InvoiceForm';
-import { useWindowSize } from '@/hooks/useWindowSize';
 import { getInvoiceColorHex } from '@/utils/getInvoiceColorHex';
 
 const formSchema = z.object({
@@ -79,19 +78,12 @@ export default function CreateInvoice() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [bleed, setBleed] = useState<boolean>(false);
-  const [scale, setScale] = useState<number | null>(null);
   const [currency, setCurrency] = useState<InvoiceCurrency>('GBP');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues
   });
-
-  const { width, height } = useWindowSize();
-
-  useEffect(() => {
-    setScale(() => calculateTemplateScale());
-  }, [bleed, width, height]);
 
   function calculateTemplateScale() {
     const preview = document.getElementById('preview');
@@ -159,23 +151,14 @@ export default function CreateInvoice() {
                     !bleed && 'flex flex-col justify-center size-full'
                   )}
                 >
-                  <div
-                    id='preview'
-                    className={clsx('template-preview', !bleed && 'shadow-xl')}
-                  >
-                    <div
-                      className={clsx('render', !scale && 'hidden')}
-                      style={{ transform: `scale(${scale})` }}
-                    >
-                      <InvoicePreview
-                        color={searchParams.get('color') as InvoiceColorType}
-                        currency={currency}
-                        defaultValues={defaultValues}
-                        subscribe={form.subscribe}
-                        theme='theme-1'
-                      />
-                    </div>
-                  </div>
+                  <InvoicePreview
+                    bleed={bleed}
+                    color={searchParams.get('color') as InvoiceColorType}
+                    currency={currency}
+                    defaultValues={defaultValues}
+                    subscribe={form.subscribe}
+                    theme='theme-1'
+                  />
                 </div>
               </div>
             </div>

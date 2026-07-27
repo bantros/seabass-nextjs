@@ -15,7 +15,11 @@
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: oklch(0.705 0.015 286.067);
-  --aspect-paper: 1 / 1.414;
+  /* --aspect-paper: 1 / 1.414; */
+  --base-unit: max(0.5px, 1 / 1800 * 100vw);
+  --padding: calc(var(--base-unit) * 40);
+  --aspect-ratio-w: 8.5;
+  --aspect-ratio-h: 11;
 }
 
 .dark {
@@ -36,8 +40,9 @@
 }
 
 @theme inline {
+  --font-default:
+    -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto;
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
@@ -52,20 +57,20 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-
-  --color-theme-primary: var(--theme-pine);
-  --color-theme-secondary: var(--theme-salmon);
-  --color-theme-tertiary: var(--theme-corn);
-
+  --color-theme-primary: #4fe454;
+  --color-theme-secondary: #fcf7ec;
+  --color-theme-tertiary: #fae1c3;
+  --color-theme-quaternary: #bfcee5;
+  --color-theme-quinary: #ccdbc8;
   --color-theme-red: #e34836;
   --color-theme-green: #3e997a;
   --color-theme-blue: #3472e3;
   --color-theme-yellow: #f4bf5f;
   --color-theme-orange: #ff9068;
   --color-theme-pink: #fcacc7;
-
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
+  --tracking-widest: 0.15em;
 
   @keyframes accordion-down {
     from {
@@ -104,7 +109,7 @@
 } */
 
 body {
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto;
+  font-family: var(--font-sans);
   color: var(--foreground);
   background-color: var(--background);
 }
@@ -128,13 +133,6 @@ input[type='date']::-webkit-calendar-picker-indicator {
 }
 
 /* template */
-
-.template-edit {
-  --base-unit: max(0.5px, 1 / 1800 * 100vw);
-  --padding: calc(var(--base-unit) * 40);
-  --aspect-ratio-w: 8.5;
-  --aspect-ratio-h: 11;
-}
 
 .template-edit:not(.bleed) {
   position: relative;
