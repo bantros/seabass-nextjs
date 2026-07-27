@@ -85,12 +85,6 @@ export default function CreateInvoice() {
     defaultValues: defaultValues
   });
 
-  function calculateTemplateScale() {
-    const preview = document.getElementById('preview');
-    if (!preview) return 1;
-    return preview.offsetWidth / 850;
-  }
-
   async function onSubmit(data: z.infer<typeof formSchema>) {
     const formData = {
       ...data,
@@ -114,7 +108,7 @@ export default function CreateInvoice() {
       const shareUrl = `${window.location.origin}/invoice/${id}`;
       router.push(shareUrl);
     } catch (err) {
-      console.error('[onShare]', err);
+      console.error('[onSubmit]', err);
     }
   }
 
@@ -128,7 +122,7 @@ export default function CreateInvoice() {
       >
         <main
           className={clsx(
-            'sticky top-0 flex flex-col justify-center transition-colors',
+            'sticky top-0 flex flex-col justify-center',
             bleed
               ? 'h-full cursor-zoom-out'
               : 'h-[calc(100dvh-8px)] cursor-zoom-in'

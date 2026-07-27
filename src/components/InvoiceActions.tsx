@@ -26,13 +26,21 @@ export default function InvoiceActions({ data }: InvoiceActionsProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
+
+      if (!response.ok) {
+        const { error } = await response.json();
+        throw new Error(error ?? 'Failed to download invoice.');
+      }
+
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
+
       a.href = url;
       a.download = `invoice-${data.invoiceNo}-${data.toName}-${data.issueDate}.pdf`;
       a.click();
       a.remove();
+
       URL.revokeObjectURL(url);
     } finally {
       setLoading(false);

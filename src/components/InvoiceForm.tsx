@@ -1,7 +1,8 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form';
 import {
@@ -44,15 +45,17 @@ interface InvoiceFormProps {
   onSubmit: (data: InvoiceFormValues) => void;
 }
 
+const currencies = ['GBP', 'USD'] as const satisfies readonly InvoiceCurrency[];
+
 export default function InvoiceForm({
   currency,
   setCurrency,
   form,
   onSubmit
 }: InvoiceFormProps) {
-  const searchParams = useSearchParams();
+  const searchParams = new URLSearchParams(useSearchParams());
 
-  const [params, setParams] = useState(new URLSearchParams(searchParams));
+  const [params, setParams] = useState(searchParams);
   const [selectedLogo, setSelectedLogo] = useState<{
     file: string | undefined;
     image: string | undefined;
@@ -70,11 +73,6 @@ export default function InvoiceForm({
 
   const watchFromName = form.watch('fromName');
   const watchToName = form.watch('toName');
-
-  const currencies = [
-    'GBP',
-    'USD'
-  ] as const satisfies readonly InvoiceCurrency[];
 
   const handleSelectColorClick = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -466,11 +464,11 @@ export default function InvoiceForm({
           <FieldLegend className='sr-only'>Colour</FieldLegend>
           <FieldGroup>
             <div className='flex flex-wrap gap-1'>
-              {Object.entries(InvoiceColorHex).map(([key], index) => {
+              {Object.entries(InvoiceColorHex).map(([key]) => {
                 if (key === 'muted') return;
                 return (
                   <button
-                    key={index}
+                    key={key}
                     className={clsx(
                       'aspect-square flex items-center justify-center size-11 lg:size-15 rounded-full outline-none cursor-pointer transition-opacity focus:opacity-75',
                       key === 'white' ? 'bg-background' : `bg-theme-${key}`
@@ -558,7 +556,7 @@ export default function InvoiceForm({
                       </button>
                       <div className='w-full grid grid-cols-[3fr_6fr_0.5fr] col-span-3 gap-4 items-center bg-background'>
                         <div className='col-start-2 flex items-center justify-center max-w-60 p-10 mb-4 bg-background rounded-4xl'>
-                          <img
+                          <Image
                             className='object-contain object-center size-full'
                             src={selectedLogo.image}
                             alt='Logo preview'

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { getInvoiceColorHex } from '@/utils/getInvoiceColorHex';
 import { getInvoiceTotals } from '@/utils/getInvoiceTotals';
@@ -28,7 +29,7 @@ export default function InvoiceTemplate({
       <div className='area-logo'>
         {values?.logo && (
           <div className='logo max-w-1/2'>
-            <img src={values.logo} alt='Logo' />
+            <Image src={values.logo} alt='Logo' loading='lazy' />
           </div>
         )}
       </div>
