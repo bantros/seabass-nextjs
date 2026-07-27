@@ -29,8 +29,18 @@ declare global {
     notes: string;
   };
 
+  type InvoiceCurrency = 'GBP' | 'USD';
+
   type InvoiceColorType =
-    'white' | 'red' | 'green' | 'blue' | 'yellow' | 'orange' | 'pink' | 'muted' | null;
+    | 'white'
+    | 'red'
+    | 'green'
+    | 'blue'
+    | 'yellow'
+    | 'orange'
+    | 'pink'
+    | 'muted'
+    | null;
 }
 
 export default global;

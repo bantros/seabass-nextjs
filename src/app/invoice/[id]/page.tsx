@@ -42,7 +42,7 @@ export default async function InvoicePage({ params }: InvoicePageProps) {
       <div className='w-full max-w-212.5 shadow-xl'>
         <InvoiceTemplate
           color={row.data.color || 'white'}
-          currency='GBP'
+          currency={row.data.currency || 'GBP'}
           theme='theme-1'
           values={row.data}
         />

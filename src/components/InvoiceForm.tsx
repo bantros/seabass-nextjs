@@ -9,8 +9,10 @@ import {
   ArrowRight,
   Asterisk,
   Check,
+  DollarSign,
   LoaderCircle,
   Plus,
+  PoundSterling,
   X
 } from 'lucide-react';
 import clsx from 'clsx';
@@ -36,11 +38,18 @@ import { toBase64 } from '@/utils/toBase64';
 import { InvoiceColorHex } from '@/types/invoiceColorHex';
 
 interface InvoiceFormProps {
+  currency: InvoiceCurrency;
+  setCurrency: (currency: InvoiceCurrency) => void;
   form: UseFormReturn<InvoiceFormValues>;
   onSubmit: (data: InvoiceFormValues) => void;
 }
 
-export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
+export default function InvoiceForm({
+  currency,
+  setCurrency,
+  form,
+  onSubmit
+}: InvoiceFormProps) {
   const { replace } = useRouter();
   const searchParams = useSearchParams();
 
@@ -62,6 +71,11 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
 
   const watchFromName = form.watch('fromName');
   const watchToName = form.watch('toName');
+
+  const currencies = [
+    'GBP',
+    'USD'
+  ] as const satisfies readonly InvoiceCurrency[];
 
   const handleSelectColorClick = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -91,16 +105,39 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
 
   return (
     <>
-      <header className=''>
-        <Link
-          className='flex items-center justify-center size-11 bg-background rounded-full transition-colors outline-border focus:outline-2 hover:text-muted-foreground'
-          href='/'
-          aria-label='Back to themes'
-        >
-          <ArrowLeft />
-        </Link>
+      <header>
+        <div className='flex justify-between gap-10'>
+          <Link
+            className='flex items-center justify-center size-11 bg-background rounded-full transition-colors outline-border focus:outline-2 hover:text-muted-foreground'
+            href='/'
+            aria-label='Back to themes'
+          >
+            <ArrowLeft />
+          </Link>
+
+          <div className='flex gap-2'>
+            {currencies.map((currencyCode) => (
+              <div key={currencyCode} className='bg-background rounded-full'>
+                <button
+                  className={clsx(
+                    'flex items-center justify-center size-11 rounded-full cursor-pointer transition-colors outline-border focus:outline-2',
+                    currencyCode === currency
+                      ? 'text-foreground bg-background hover:text-muted-foreground'
+                      : 'text-muted-foreground bg-muted/50 hover:text-foreground'
+                  )}
+                  type='button'
+                  aria-label={`Select${currencyCode} as your currency`}
+                  onClick={() => setCurrency(currencyCode)}
+                >
+                  {currencyCode === 'GBP' ? <PoundSterling /> : <DollarSign />}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
         <h2 className='text-5xl xl:text-7xl mt-12 mb-8'>New invoice</h2>
       </header>
+
       <form
         className='flex flex-col gap-y-6 w-full'
         onSubmit={form.handleSubmit(onSubmit)}

@@ -80,6 +80,7 @@ export default function CreateInvoice() {
   const searchParams = useSearchParams();
   const [bleed, setBleed] = useState<boolean>(false);
   const [scale, setScale] = useState<number | null>(null);
+  const [currency, setCurrency] = useState<InvoiceCurrency>('GBP');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -99,7 +100,11 @@ export default function CreateInvoice() {
   }
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    const formData = { ...data, color: searchParams.get('color') || 'white' };
+    const formData = {
+      ...data,
+      color: searchParams.get('color') || 'white',
+      currency: currency
+    };
 
     try {
       const response = await fetch('/api/share-invoice', {
@@ -125,7 +130,7 @@ export default function CreateInvoice() {
     <div className='grid'>
       <div
         className={clsx(
-          'grid gap-1 min-h-dvh',
+          'grid gap-1 min-h-dvh bg-foreground',
           bleed ? 'grid-cols-1' : 'md:grid-cols-2 p-1'
         )}
       >
@@ -164,7 +169,7 @@ export default function CreateInvoice() {
                     >
                       <InvoicePreview
                         color={searchParams.get('color') as InvoiceColorType}
-                        currency='GBP'
+                        currency={currency}
                         defaultValues={defaultValues}
                         subscribe={form.subscribe}
                         theme='theme-1'
@@ -182,7 +187,12 @@ export default function CreateInvoice() {
             'relative p-10 xl:py-15 xl:px-20 bg-muted rounded-sm'
           )}
         >
-          <InvoiceForm form={form} onSubmit={onSubmit} />
+          <InvoiceForm
+            currency={currency}
+            setCurrency={setCurrency}
+            form={form}
+            onSubmit={onSubmit}
+          />
         </aside>
       </div>
     </div>
