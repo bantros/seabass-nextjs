@@ -134,14 +134,19 @@ export default function CreateInvoice() {
             'sticky top-0 flex flex-col justify-center transition-colors',
             bleed
               ? 'h-full cursor-zoom-out'
-              : 'h-[calc(100dvh-8px)] p-4 lg:p-6 rounded-sm cursor-zoom-in'
+              : 'h-[calc(100dvh-8px)] cursor-zoom-in'
           )}
-          style={{
-            backgroundColor: `${getInvoiceColorHex(searchParams.get('color') as InvoiceColorType)}80`
-          }}
           onClick={() => setBleed(!bleed)}
         >
-          <div className={clsx('template-edit', bleed && 'bleed')}>
+          <div
+            className={clsx(
+              'template-edit transition-colors',
+              bleed ? 'bleed' : 'p-4 lg:p-6 rounded-sm'
+            )}
+            style={{
+              backgroundColor: `color-mix(in oklab, ${getInvoiceColorHex(searchParams.get('color') as InvoiceColorType)}, white 50%)`
+            }}
+          >
             <div className='template-container'>
               <div className='template-view'>
                 <div
@@ -149,13 +154,12 @@ export default function CreateInvoice() {
                     !bleed && 'flex flex-col justify-center size-full'
                   )}
                 >
-                  <div id='preview' className='template-preview'>
+                  <div
+                    id='preview'
+                    className={clsx('template-preview', !bleed && 'shadow-xl')}
+                  >
                     <div
-                      className={clsx(
-                        'render transition-transformmm',
-                        !bleed && 'shadow',
-                        !scale && 'hidden'
-                      )}
+                      className={clsx('render', !scale && 'hidden')}
                       style={{ transform: `scale(${scale})` }}
                     >
                       <InvoicePreview
@@ -173,7 +177,10 @@ export default function CreateInvoice() {
           </div>
         </main>
         <aside
-          className={clsx(bleed && 'hidden', 'relative p-5 lg:p-10 rounded-sm')}
+          className={clsx(
+            bleed && 'hidden',
+            'relative p-10 xl:py-15 xl:px-20 bg-muted rounded-sm'
+          )}
         >
           <InvoiceForm form={form} onSubmit={onSubmit} />
         </aside>

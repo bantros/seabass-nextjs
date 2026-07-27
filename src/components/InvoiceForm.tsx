@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Asterisk,
+  Check,
   LoaderCircle,
   Plus,
   X
@@ -42,6 +43,7 @@ interface InvoiceFormProps {
 export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
   const { replace } = useRouter();
   const searchParams = useSearchParams();
+
   const [params, setParams] = useState(new URLSearchParams(searchParams));
   const [selectedLogo, setSelectedLogo] = useState<{
     file: string | undefined;
@@ -50,18 +52,20 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
     file: undefined,
     image: undefined
   });
+  const logoRef = useRef<HTMLInputElement | null>(null);
+
   const { fields, append, remove } = useFieldArray<InvoiceFormValues>({
     control: form.control,
     name: 'items'
   });
-  const logoRef = useRef<HTMLInputElement | null>(null);
-
   const { isLoading, isSubmitting } = form.formState;
 
   const watchFromName = form.watch('fromName');
   const watchToName = form.watch('toName');
 
-  const handleThemeClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSelectColorClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     const color = event.currentTarget.dataset.color;
     if (color) {
       params.set('color', color);
@@ -89,13 +93,13 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
     <>
       <header className=''>
         <Link
-          className='flex items-center justify-center size-11 bg-muted rounded-full'
+          className='flex items-center justify-center size-11 bg-background rounded-full'
           href='/'
           aria-label='Back to select a theme'
         >
           <ArrowLeft />
         </Link>
-        <h2 className='text-7xl mt-12 mb-8'>New invoice</h2>
+        <h2 className='text-5xl xl:text-7xl mt-12 mb-8'>New invoice</h2>
       </header>
       <form
         className='flex flex-col gap-y-6 w-full'
@@ -425,17 +429,26 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
         <FieldSet>
           <FieldLegend className='sr-only'>Colour</FieldLegend>
           <FieldGroup>
-            <div className='flex gap-1'>
-              {Object.entries(InvoiceColorHex).map(([key], index) => (
-                <button
-                  key={index}
-                  className={`aspect-square size-15 bg-theme-${key} rounded-full cursor-pointer`}
-                  type='button'
-                  aria-label={`Select ${key}`}
-                  data-color={key}
-                  onClick={handleThemeClick}
-                />
-              ))}
+            <div className='flex flex-wrap gap-1'>
+              {Object.entries(InvoiceColorHex).map(([key], index) => {
+                if (key === 'muted') return;
+                return (
+                  <button
+                    key={index}
+                    className={clsx(
+                      'aspect-square flex items-center justify-center size-11 lg:size-15 rounded-full cursor-pointer',
+                      key === 'white' ? 'bg-background' : `bg-theme-${key}`
+                    )}
+                    type='button'
+                    aria-label={`Select ${key}`}
+                    data-color={key}
+                    onClick={handleSelectColorClick}
+                  >
+                    {((!params.get('color') && key === 'green') ||
+                      key === params.get('color')) && <Check />}
+                  </button>
+                );
+              })}
             </div>
           </FieldGroup>
         </FieldSet>
@@ -483,7 +496,7 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
                       aria-label='Upload image'
                       onClick={() => logoRef?.current?.click()}
                     >
-                      <span className='flex items-center justify-center size-11 bg-white rounded-full'>
+                      <span className='flex items-center justify-center size-11 text-muted-foreground bg-muted rounded-full'>
                         <Plus />
                       </span>
                     </button>
@@ -507,7 +520,7 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
                           <X />
                         </span>
                       </button>
-                      <div className='w-full grid grid-cols-[3fr_6fr_0.5fr] col-span-3 gap-4 items-center bg-muted'>
+                      <div className='w-full grid grid-cols-[3fr_6fr_0.5fr] col-span-3 gap-4 items-center bg-background'>
                         <div className='col-start-2 flex items-center justify-center max-w-60 p-10 mb-4 bg-background rounded-4xl'>
                           <img
                             className='object-contain object-center size-full'
@@ -590,7 +603,7 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
             {fields.map((field, index) => (
               <div
                 key={field.id}
-                className='flex items-center gap-x-3 pl-6 pr-2 bg-muted rounded-full'
+                className='flex items-center gap-x-3 pl-6 pr-2 bg-background rounded-full'
               >
                 <Controller
                   name={`items.${index}.qty`}
@@ -649,25 +662,25 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
                   )}
                 />
                 <button
-                  className='flex items-center justify-between h-15 text-xl text-muted-foreground bg-muted rounded-full cursor-pointer'
+                  className='flex items-center justify-between h-15 text-xl text-muted-foreground rounded-full cursor-pointer'
                   type='button'
                   aria-label={`Remove item ${index + 1}`}
                   onClick={() => remove(index)}
                 >
-                  <span className='flex items-center justify-center size-11 bg-white rounded-full'>
+                  <span className='flex items-center justify-center size-11 bg-muted rounded-full'>
                     <X />
                   </span>
                 </button>
               </div>
             ))}
-            <div className='w-full pl-6 pr-2 text-muted-foreground bg-muted rounded-full'>
+            <div className='w-full pl-6 pr-2 text-muted-foreground bg-background rounded-full'>
               <button
                 className='flex w-full items-center justify-between h-15 text-xl cursor-pointer'
                 type='button'
                 onClick={() => append({ qty: 1, description: '', amount: '' })}
               >
                 Add item
-                <span className='flex items-center justify-center size-11 bg-white rounded-full'>
+                <span className='flex items-center justify-center size-11 bg-muted rounded-full'>
                   <Plus />
                 </span>
               </button>
@@ -729,7 +742,7 @@ export default function InvoiceForm({ form, onSubmit }: InvoiceFormProps) {
           </FieldGroup>
         </FieldSet>
 
-        <div className='sticky bottom-5 lg:bottom-10 flex flex-col items-end gap-3'>
+        <div className='sticky bottom-5 lg:bottom-10 flex flex-col items-end gap-3 mt-6'>
           <Button
             className='rounded-full'
             type='submit'

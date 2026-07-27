@@ -36,13 +36,13 @@ function AccordionTrigger({
         //   className
         // )}
         className={cn(
-          'group/accordion-trigger relative grid grid-cols-[3fr_6fr_0.5fr] gap-4 items-center w-full h-15 pl-6 pr-2 text-xl text-left bg-gray-100 rounded-4xl outline-none cursor-pointer transition-all data-panel-open:opacity-50',
+          'group/accordion-trigger relative grid grid-cols-[3fr_6fr_0.5fr] gap-4 items-center w-full h-15 pl-6 pr-2 text-xl text-left text-muted-foreground bg-background rounded-4xl outline-none cursor-pointer transition-all data-panel-open:text-muted-foreground/50 data-panel-open:bg-background/75',
           className
         )}
         {...props}
       >
         {children}
-        <div className='flex items-center justify-center size-11 bg-white rounded-full'>
+        <div className='flex items-center justify-center size-11 text-muted-foreground bg-muted rounded-full'>
           <Plus
             data-slot='accordion-trigger-icon'
             className='pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden'
