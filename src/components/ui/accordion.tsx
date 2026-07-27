@@ -42,7 +42,7 @@ function AccordionTrigger({
         {...props}
       >
         {children}
-        <div className='flex items-center justify-center size-11 text-muted-foreground bg-muted rounded-full'>
+        <div className='flex items-center justify-center size-11 text-muted-foreground bg-muted rounded-full outline-border transition-colors hover:text-foreground group-focus-visible/accordion-trigger:outline-2'>
           <Plus
             data-slot='accordion-trigger-icon'
             className='pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden'
