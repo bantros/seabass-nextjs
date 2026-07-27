@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form';
@@ -50,7 +50,6 @@ export default function InvoiceForm({
   form,
   onSubmit
 }: InvoiceFormProps) {
-  const { replace } = useRouter();
   const searchParams = useSearchParams();
 
   const [params, setParams] = useState(new URLSearchParams(searchParams));
@@ -84,7 +83,7 @@ export default function InvoiceForm({
     if (color) {
       params.set('color', color);
       setParams(params);
-      replace(`?${params.toString()}`);
+      window.history.pushState(null, '', `?${params.toString()}`);
     }
   };
 
