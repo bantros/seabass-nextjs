@@ -9,6 +9,7 @@ import clsx from 'clsx';
 
 import InvoicePreview from '@/components/InvoicePreview';
 import InvoiceForm from '@/components/InvoiceForm';
+import { formSchema } from '@/lib/schema';
 import { getInvoiceColorHex } from '@/utils/getInvoiceColorHex';
 
 const formSchema = z.object({
