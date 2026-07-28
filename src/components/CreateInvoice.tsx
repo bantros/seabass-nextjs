@@ -94,17 +94,39 @@ export default function CreateInvoice() {
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    const formData = {
+    const formData = new FormData();
+    const payload = {
       ...data,
       color: searchParams.get('color') || 'white',
-      currency: currency
+      currency
     };
+
+    if (data.logo instanceof File) {
+      formData.append('logo', data.logo, data.logo.name);
+
+      try {
+        const response = await fetch('/api/upload-logo', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          const { error } = await response.json();
+          throw new Error(error ?? 'Failed to upload image.');
+        }
+
+        const { logoUrl } = await response.json();
+        payload.logo = logoUrl;
+      } catch (err) {
+        console.error('[onSubmit]', err);
+      }
+    }
 
     try {
       const response = await fetch('/api/share-invoice', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) {
