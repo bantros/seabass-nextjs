@@ -1,6 +1,6 @@
-import { createServiceClient } from '@/utils/supabase/server';
 import InvoiceTemplate from '@/components/InvoiceTemplate';
 import InvoiceActions from '@/components/InvoiceActions';
+import { createClient } from '@/lib/supabase/client';
 import { getInvoiceColorHex } from '@/utils/getInvoiceColorHex';
 
 interface InvoicePageProps {
@@ -18,7 +18,7 @@ export async function generateMetadata() {
 
 export default async function InvoicePage({ params }: InvoicePageProps) {
   const { id } = await params;
-  const { data: row, error } = await createServiceClient()
+  const { data: row, error } = await createClient()
     .from('invoices')
     .select('data')
     .eq('id', id)

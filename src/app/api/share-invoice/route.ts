@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { createServiceClient } from '@/utils/supabase/server';
+import { createServer } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
   const data: InvoiceFormValues = await request.json();
-  const supabase = createServiceClient();
+  const supabase = await createServer();
 
   const { data: row, error } = await supabase
     .from('invoices')
