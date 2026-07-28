@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { getInvoiceColorHex } from '@/utils/getInvoiceColorHex';
 import { getInvoiceTotals } from '@/utils/getInvoiceTotals';
@@ -8,6 +7,7 @@ import { parseNumericValue } from '@/utils/parseNumericValue';
 interface InvoiceTemplateProps {
   color: InvoiceColorType;
   currency: 'GBP' | 'USD';
+  logo: string | undefined;
   values: InvoiceFormValues;
   theme: string;
 }
@@ -15,6 +15,7 @@ interface InvoiceTemplateProps {
 export default function InvoiceTemplate({
   color = 'white',
   currency,
+  logo,
   theme,
   values
 }: InvoiceTemplateProps) {
@@ -27,9 +28,9 @@ export default function InvoiceTemplate({
       style={{ backgroundColor: getInvoiceColorHex(color) }}
     >
       <div className='area-logo'>
-        {values?.logo && (
+        {logo && (
           <div className='logo max-w-1/2'>
-            <Image src={values.logo} alt='Logo' loading='lazy' />
+            <img src={logo} alt='Logo' />
           </div>
         )}
       </div>

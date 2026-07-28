@@ -17,8 +17,9 @@ interface InvoicePreviewProps {
 export default function InvoicePreview(props: InvoicePreviewProps) {
   const templateRef = useRef<HTMLDivElement | null>(null);
   const [scale, setScale] = useState<number | null>(null);
-  const [values, setValues] = useState<InvoiceFormValues | null>(
-    props.defaultValues
+  const [values, setValues] = useState<InvoiceFormValues>(props.defaultValues);
+  const [logoUrl, setLogoUrl] = useState<string | undefined>(() =>
+    typeof values?.logo === 'string' ? values.logo : undefined
   );
 
   const { width, height } = useWindowSize();
@@ -26,6 +27,15 @@ export default function InvoicePreview(props: InvoicePreviewProps) {
   useEffect(() => {
     setScale(() => calculateTemplateScale());
   }, [props.bleed, width, height]);
+
+  useEffect(() => {
+    if (values.logo instanceof File) {
+      const url = URL.createObjectURL(values.logo);
+      setLogoUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+    setLogoUrl(typeof values.logo === 'string' ? values.logo : undefined);
+  }, [values.logo]);
 
   function calculateTemplateScale() {
     if (!templateRef.current) return 1;
@@ -58,6 +68,7 @@ export default function InvoicePreview(props: InvoicePreviewProps) {
         <InvoiceTemplate
           color={props.color}
           currency={props.currency}
+          logo={logoUrl}
           values={values}
           theme={props.theme}
         />

@@ -43,6 +43,7 @@ export default async function InvoicePage({ params }: InvoicePageProps) {
         <InvoiceTemplate
           color={row.data.color || 'white'}
           currency={row.data.currency || 'GBP'}
+          logo={row.data.logo}
           theme='theme-1'
           values={row.data}
         />

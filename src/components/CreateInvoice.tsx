@@ -26,7 +26,14 @@ const formSchema = z.object({
   toPostcode: z.string(),
   toCountry: z.string(),
   toPhone: z.string(),
-  logo: z.string(),
+  logo: z.union([
+    z
+      .file()
+      .min(1)
+      .max(1024 * 1024, { message: 'Image must be 1MB or less.' })
+      .mime(['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml']),
+    z.string()
+  ]),
   invoiceNo: z.string(),
   issueDate: z.iso.date(),
   dueDate: z.iso.date(),

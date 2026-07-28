@@ -20,7 +20,7 @@ declare global {
     toPostcode: string;
     toCountry: string;
     toPhone: string;
-    logo: string;
+    logo: File | string;
     invoiceNo: string;
     issueDate: string;
     dueDate: string;

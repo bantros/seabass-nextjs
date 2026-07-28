@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useRef, useState } from 'react';
@@ -35,7 +34,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { toBase64 } from '@/utils/toBase64';
 import { InvoiceColorHex } from '@/types/invoiceColorHex';
 
 interface InvoiceFormProps {
@@ -90,12 +88,19 @@ export default function InvoiceForm({
   ) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-      const image = (await toBase64(file)) as string;
+
+      if (file.size > 1_048_576) {
+        form.setError('logo', { message: 'Image must be 1MB or less.' });
+        return undefined;
+      }
+      form.clearErrors('logo');
+
+      const image = URL.createObjectURL(file);
       setSelectedLogo({
         file: file.name,
         image: image
       });
-      return image;
+      return file;
     }
     return undefined;
   };
@@ -511,16 +516,23 @@ export default function InvoiceForm({
                     accept='.jpg,.jpeg,.png,.svg'
                     aria-invalid={fieldState.invalid}
                     onChange={async (event) => {
-                      const image = await handleLogoChange(event);
-                      image && field.onChange(image);
+                      const file = await handleLogoChange(event);
+                      file && field.onChange(file);
                     }}
                   />
                   <div
                     className={clsx(
-                      'flex items-center w-full min-w-0 min-h-15 py-1 px-0 text-xl text-muted-foreground'
+                      'flex items-center w-full min-w-0 min-h-15 py-1 px-0 text-xl',
+                      fieldState.invalid
+                        ? 'text-destructive'
+                        : 'text-muted-foreground'
                     )}
                   >
-                    {selectedLogo.file ? selectedLogo.file : 'None'}
+                    {fieldState.invalid
+                      ? fieldState.error?.message
+                      : selectedLogo.file
+                        ? selectedLogo.file
+                        : 'None'}
                   </div>
                   {!selectedLogo.file && (
                     <button
@@ -543,7 +555,7 @@ export default function InvoiceForm({
                         type='button'
                         aria-label='Remove logo'
                         onClick={() => {
-                          form.setValue('logo', '');
+                          form.resetField('logo');
                           setSelectedLogo({
                             file: undefined,
                             image: undefined
@@ -555,8 +567,8 @@ export default function InvoiceForm({
                         </span>
                       </button>
                       <div className='w-full grid grid-cols-[3fr_6fr_0.5fr] col-span-3 gap-4 items-center bg-background'>
-                        <div className='col-start-2 flex items-center justify-center max-w-60 p-10 mb-4 bg-background rounded-4xl'>
-                          <Image
+                        <div className='col-start-2 flex items-center justify-center max-w-60 p-10 mb-4 bg-muted rounded-4xl'>
+                          <img
                             className='object-contain object-center size-full'
                             src={selectedLogo.image}
                             alt='Logo preview'
