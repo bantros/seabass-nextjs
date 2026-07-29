@@ -9,7 +9,7 @@ export const config = {
 const isDev = process.env.NODE_ENV === 'development';
 
 const ratelimit =
-  isDev && process.env.UPSTASH_REDIS_REST_URL
+  !isDev && process.env.UPSTASH_REDIS_REST_URL
     ? new Ratelimit({
         redis: Redis.fromEnv(),
         limiter: Ratelimit.fixedWindow(5, '1 d'),
