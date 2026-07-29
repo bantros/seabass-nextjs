@@ -9,47 +9,9 @@ import clsx from 'clsx';
 
 import InvoicePreview from '@/components/InvoicePreview';
 import InvoiceForm from '@/components/InvoiceForm';
+import { toast } from 'sonner';
 import { formSchema } from '@/lib/schema';
 import { getInvoiceColorHex } from '@/utils/getInvoiceColorHex';
-
-const formSchema = z.object({
-  fromName: z.string().min(1, 'This field is required.'),
-  fromEmail: z.email({ message: 'Enter a valid email.' }),
-  fromAddress: z.string(),
-  fromCity: z.string(),
-  fromPostcode: z.string(),
-  fromCountry: z.string(),
-  fromPhone: z.string(),
-  toName: z.string().min(1, 'This field is required.'),
-  toEmail: z.email({ message: 'Enter a valid email.' }),
-  toAddress: z.string(),
-  toCity: z.string(),
-  toPostcode: z.string(),
-  toCountry: z.string(),
-  toPhone: z.string(),
-  logo: z.union([
-    z
-      .file()
-      .min(1)
-      .max(1024 * 1024, { message: 'Image must be 1MB or less.' })
-      .mime(['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml']),
-    z.string()
-  ]),
-  invoiceNo: z.string(),
-  issueDate: z.iso.date(),
-  dueDate: z.iso.date(),
-  items: z
-    .array(
-      z.object({
-        qty: z.number(),
-        description: z.string(),
-        amount: z.string()
-      })
-    )
-    .min(1, 'Add at least 1 item.'),
-  tax: z.string(),
-  notes: z.string()
-});
 
 const date = new Date();
 const toDate = new Date(date);
@@ -112,13 +74,16 @@ export default function CreateInvoice() {
 
         if (!response.ok) {
           const { error } = await response.json();
+          toast.error(error ?? 'Failed to upload image.', {
+            testId: 'upload-image-error'
+          });
           throw new Error(error ?? 'Failed to upload image.');
         }
 
         const { logoUrl } = await response.json();
         payload.logo = logoUrl;
       } catch (err) {
-        console.error('[onSubmit]', err);
+        console.error(err);
       }
     }
 
@@ -131,6 +96,9 @@ export default function CreateInvoice() {
 
       if (!response.ok) {
         const { error } = await response.json();
+        toast.error(error ?? 'Failed to share invoice.', {
+          testId: 'share-invoice-error'
+        });
         throw new Error(error ?? 'Failed to share invoice.');
       }
 
@@ -138,7 +106,7 @@ export default function CreateInvoice() {
       const shareUrl = `${window.location.origin}/invoice/${id}`;
       router.push(shareUrl);
     } catch (err) {
-      console.error('[onSubmit]', err);
+      console.error(err);
     }
   }
 
