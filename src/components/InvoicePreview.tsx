@@ -8,7 +8,7 @@ import { useWindowSize } from '@/hooks/useWindowSize';
 interface InvoicePreviewProps {
   bleed?: boolean;
   color: InvoiceColorType;
-  currency: 'GBP' | 'USD';
+  currency: InvoiceCurrency;
   defaultValues: InvoiceFormValues;
   subscribe?: any;
   theme: any;

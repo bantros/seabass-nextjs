@@ -6,7 +6,7 @@ import { parseNumericValue } from '@/utils/parseNumericValue';
 
 interface InvoiceTemplateProps {
   color: InvoiceColorType;
-  currency: 'GBP' | 'USD';
+  currency: InvoiceCurrency;
   logo: string | undefined;
   values: InvoiceFormValues;
   theme: string;

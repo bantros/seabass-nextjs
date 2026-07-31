@@ -1,6 +1,6 @@
 export const formatCurrency = (
   amount: number,
-  currency: 'GBP' | 'USD',
+  currency: InvoiceCurrency,
   style: 'currency' | 'decimal'
 ) => {
   const formattedAmount = new Intl.NumberFormat('en-US', {
