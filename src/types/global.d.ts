@@ -1,8 +1,9 @@
 declare global {
   type InvoiceItem = {
-    qty: number;
     description: string;
+    qty: number;
     amount: string;
+    price?: string;
   };
 
   type InvoiceFormValues = {
@@ -30,6 +31,19 @@ declare global {
   };
 
   type InvoiceCurrency = 'GBP' | 'USD';
+
+  type InvoiceTotals = {
+    subtotal: string;
+    tax: string;
+    total: string;
+  };
+
+  type InvoiceThemeProps = {
+    items: InvoiceItem[];
+    logo: string | undefined;
+    totals: InvoiceTotals;
+    values: InvoiceFormValues;
+  };
 
   type InvoiceColorType =
     | 'white'
