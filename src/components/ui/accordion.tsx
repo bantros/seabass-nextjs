@@ -16,7 +16,7 @@ function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
   return (
     <AccordionPrimitive.Item
       data-slot='accordion-item'
-      className={cn('grid gap-y-1', className)}
+      className={cn('group/accordion-item grid gap-y-1', className)}
       {...props}
     />
   );
@@ -31,10 +31,6 @@ function AccordionTrigger({
     <AccordionPrimitive.Header className='flex'>
       <AccordionPrimitive.Trigger
         data-slot='accordion-trigger'
-        // className={cn(
-        //   'focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 aria-disabled:pointer-events-none aria-disabled:opacity-50',
-        //   className
-        // )}
         className={cn(
           'group/accordion-trigger relative grid grid-cols-[3fr_6fr_0.5fr] gap-4 items-center w-full h-15 pl-6 pr-2 text-xl text-left text-muted-foreground bg-background rounded-4xl outline-none cursor-pointer transition-all data-panel-open:text-muted-foreground/50 data-panel-open:bg-background/75',
           className

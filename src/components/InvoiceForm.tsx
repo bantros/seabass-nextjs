@@ -3,7 +3,13 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useRef, useState } from 'react';
-import { Controller, useFieldArray, UseFormReturn } from 'react-hook-form';
+import {
+  Controller,
+  useFieldArray,
+  UseFormReturn,
+  type FieldErrors
+} from 'react-hook-form';
+import { toast } from 'sonner';
 import {
   ArrowLeft,
   ArrowRight,
@@ -25,7 +31,6 @@ import {
 } from '@/components/ui/accordion';
 import {
   Field,
-  FieldError,
   FieldGroup,
   FieldLabel,
   FieldLegend,
@@ -69,8 +74,7 @@ export default function InvoiceForm({
   });
   const { isLoading, isSubmitting } = form.formState;
 
-  const watchFromName = form.watch('fromName');
-  const watchToName = form.watch('toName');
+  const [watchFromName, watchToName] = form.watch(['fromName', 'toName']);
 
   const handleSelectColorClick = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -90,7 +94,11 @@ export default function InvoiceForm({
       const file = event.target.files[0];
 
       if (file.size > 1_048_576) {
-        form.setError('logo', { message: 'Image must be 1MB or less.' });
+        const message = 'Image must be 1MB or less.';
+        form.setError('logo', { message: message });
+        toast.error(message, {
+          testId: 'image-upload-limit'
+        });
         return undefined;
       }
       form.clearErrors('logo');
@@ -103,6 +111,15 @@ export default function InvoiceForm({
       return file;
     }
     return undefined;
+  };
+
+  const onError = (errors: FieldErrors<InvoiceFormValues>) => {
+    console.log('onError');
+    if (errors) {
+      toast.error('Please fill out the highlighted fields.', {
+        testId: 'form-valdation-error'
+      });
+    }
   };
 
   return (
@@ -142,7 +159,7 @@ export default function InvoiceForm({
 
       <form
         className='flex flex-col gap-y-6 w-full'
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, onError)}
       >
         <Accordion>
           <AccordionItem value='from'>
@@ -177,9 +194,6 @@ export default function InvoiceForm({
                             <Asterisk />
                           </span>
                         </Field>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
                       </>
                     )}
                   />
@@ -206,9 +220,6 @@ export default function InvoiceForm({
                             </span>
                           </div>
                         </Field>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
                       </>
                     )}
                   />
@@ -336,9 +347,6 @@ export default function InvoiceForm({
                             </span>
                           </div>
                         </Field>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
                       </>
                     )}
                   />
@@ -365,9 +373,6 @@ export default function InvoiceForm({
                             </span>
                           </div>
                         </Field>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
                       </>
                     )}
                   />
@@ -528,11 +533,7 @@ export default function InvoiceForm({
                         : 'text-muted-foreground'
                     )}
                   >
-                    {fieldState.invalid
-                      ? fieldState.error?.message
-                      : selectedLogo.file
-                        ? selectedLogo.file
-                        : 'None'}
+                    {selectedLogo.file ? selectedLogo.file : 'None'}
                   </div>
                   {!selectedLogo.file && (
                     <button
@@ -701,9 +702,6 @@ export default function InvoiceForm({
                         aria-invalid={fieldState.invalid}
                         {...controllerField}
                       />
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
                     </Field>
                   )}
                 />
