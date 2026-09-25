@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,31 +21,32 @@ const defaultFromDate = date.toISOString().split('T')[0];
 const defaultToDate = toDate.toISOString().split('T')[0];
 
 const defaultValues = {
-  fromName: '',
-  fromEmail: '',
-  fromAddress: '',
-  fromCity: '',
-  fromPostcode: '',
+  fromName: 'Jonathon Halliwell',
+  fromEmail: 'jon@bantros.net',
+  fromAddress: 'Flat 52 New Little Mill',
+  fromCity: 'Manchester',
+  fromPostcode: 'M4 6GH',
   fromCountry: '',
-  fromPhone: '',
-  toName: '',
-  toEmail: '',
-  toAddress: '',
-  toCity: '',
-  toPostcode: '',
+  fromPhone: '07799600808',
+  toName: 'Seabass',
+  toEmail: 'invoice@seabass.com',
+  toAddress: '58 Park Road',
+  toCity: 'London',
+  toPostcode: 'E12 2YG',
   toCountry: '',
   toPhone: '',
   logo: '',
   invoiceNo: '#100',
   issueDate: defaultFromDate,
   dueDate: defaultToDate,
-  items: [{ qty: 1, description: 'Item', amount: '1000' }],
+  items: [{ qty: 1, description: 'Description', amount: '1000' }],
   tax: '',
-  notes: ''
+  notes: 'Thank you for your business'
 };
 
 export default function CreateInvoice() {
   const router = useRouter();
+  const { slug } = useParams();
   const searchParams = useSearchParams();
   const [bleed, setBleed] = useState<boolean>(false);
   const [currency, setCurrency] = useState<InvoiceCurrency>('GBP');
@@ -149,7 +150,7 @@ export default function CreateInvoice() {
                     currency={currency}
                     defaultValues={defaultValues}
                     subscribe={form.subscribe}
-                    theme='theme-1'
+                    theme={slug}
                   />
                 </div>
               </div>
